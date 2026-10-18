@@ -7,4 +7,5 @@
   { "id": 6, "name": "10元899万送金枪", "category": "豪华套餐", "price": 10, "introduction": "899万送金枪，高分段位，豪华套餐" },
   { "id": 7, "name": "6元保活单", "category": "存活保障", "price": 6, "introduction": "保活单，保证存活，安全无忧" },
   { "id": 8, "name": "9178", "category": "7891", "price": 7878, "introduction": "这是一个测试的，请不要购买" }
+  { "id": 9, "name": "78", "category": "91", "price": 9178, "introduction": "这是一个测试的，请不要购买" }
 ]
