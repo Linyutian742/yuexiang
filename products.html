@@ -4,65 +4,413 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>商品 - 悦翔电竞</title>
-<link rel="stylesheet" href="css/style.css">
+<style>
+/* ==================== 基础 ==================== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", sans-serif;
+    background: #0a0a0f;
+    color: #e2e8f0;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+a { color: #a855f7; text-decoration: none; }
+
+/* ==================== 顶部导航 ==================== */
+.navbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 56px;
+    background: #0f0f1a;
+    border-bottom: 2px solid #a855f7;
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 1000;
+}
+
+.nav-logo {
+    font-size: 20px;
+    font-weight: bold;
+    color: #a855f7;
+    text-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
+    letter-spacing: 2px;
+}
+
+.nav-links { display: flex; align-items: center; gap: 24px; }
+
+.nav-links a {
+    color: #e2e8f0;
+    font-size: 15px;
+    padding: 6px 12px;
+    border-bottom: 2px solid transparent;
+}
+
+.nav-links a:hover,
+.nav-links a.active { color: #a855f7; border-bottom-color: #a855f7; }
+
+.nav-menu-btn {
+    display: none;
+    font-size: 22px;
+    color: #a855f7;
+    cursor: pointer;
+    padding: 4px 12px;
+    background: transparent;
+    border: 1px solid #a855f7;
+    border-radius: 3px;
+}
+
+.nav-dropdown {
+    display: none;
+    position: fixed;
+    top: 56px; right: 0;
+    width: 260px;
+    background: #0f0f1a;
+    border: 1px solid #a855f7;
+    border-top: none;
+    box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3);
+    z-index: 999;
+}
+
+.nav-dropdown.show { display: block; }
+
+.nav-dropdown a {
+    display: block;
+    padding: 10px 16px;
+    color: #e2e8f0;
+    font-size: 14px;
+    border-bottom: 1px solid #1e1e2e;
+}
+
+.nav-dropdown a:hover { background: #1a1a2e; color: #a855f7; }
+
+/* ==================== 主体 ==================== */
+.main-content {
+    margin: 56px auto 0;
+    max-width: 1080px;
+    padding: 20px;
+    min-height: calc(100vh - 56px);
+}
+
+.products-header { text-align: center; margin-bottom: 24px; }
+
+.products-brand {
+    font-size: 28px;
+    font-weight: bold;
+    color: #a855f7;
+    text-shadow: 0 0 12px rgba(168, 85, 247, 0.4);
+    letter-spacing: 4px;
+}
+
+.products-subtitle { font-size: 16px; color: #64748b; margin-top: 4px; }
+
+/* ==================== 商品网格 ==================== */
+.product-grid {
+    display: flex;
+    display: -webkit-flex;
+    flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+    gap: 16px;
+    padding: 20px 0;
+    justify-content: center;
+    -webkit-justify-content: center;
+}
+
+.product-card {
+    width: 280px;
+    background: #0f0f1a;
+    border: 1px solid #2a2a3e;
+    padding: 20px;
+    display: flex;
+    display: -webkit-flex;
+    flex-direction: column;
+    -webkit-flex-direction: column;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.product-card:hover {
+    border-color: #a855f7;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.15);
+    transform: translateY(-3px);
+}
+
+.product-category {
+    align-self: flex-start;
+    -webkit-align-self: flex-start;
+    font-size: 12px;
+    color: #a855f7;
+    border: 1px solid rgba(168, 85, 247, 0.5);
+    padding: 1px 8px;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.product-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #e2e8f0;
+    margin-bottom: 8px;
+}
+
+.product-price {
+    font-size: 24px;
+    font-weight: bold;
+    color: #a855f7;
+    text-shadow: 0 0 8px rgba(168, 85, 247, 0.3);
+    margin-bottom: 8px;
+}
+
+.product-price-unit { font-size: 14px; color: #64748b; font-weight: normal; }
+
+.product-desc {
+    flex: 1;
+    -webkit-flex: 1;
+    color: #94a3b8;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.product-buy-btn { align-self: stretch; -webkit-align-self: stretch; }
+
+/* ==================== 按钮 ==================== */
+.btn {
+    display: inline-block;
+    padding: 10px 28px;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+
+.btn-primary { background: #a855f7; color: #fff; border: 1px solid #a855f7; }
+.btn-primary:hover { box-shadow: 0 0 15px rgba(168, 85, 247, 0.5); }
+
+.btn-secondary { background: transparent; color: #a855f7; border: 1px solid #a855f7; }
+.btn-secondary:hover { background: #1a1a2e; }
+
+.btn-small { padding: 8px 16px; font-size: 14px; }
+
+/* ==================== 状态提示 ==================== */
+.status { text-align: center; color: #64748b; padding: 30px 0; line-height: 2; }
+.status .hint { display: block; font-size: 13px; color: #475569; }
+
+.refund-wrap { text-align: center; margin-top: 20px; }
+
+/* ==================== 移动端 ==================== */
+@media screen and (max-width: 768px) {
+    .navbar { height: 48px; padding: 0 12px; }
+    .nav-logo { font-size: 16px; letter-spacing: 1px; }
+    .nav-links { display: none; }
+    .nav-menu-btn { display: block; }
+    .nav-dropdown { top: 48px; width: 100%; left: 0; right: 0; max-height: calc(100vh - 48px); overflow-y: auto; }
+    .main-content { margin-top: 48px; padding: 12px; }
+    .product-grid { gap: 10px; padding: 10px 0; }
+    .product-card { width: 100%; padding: 14px; }
+    .product-title { font-size: 16px; }
+    .product-price { font-size: 20px; }
+    .products-brand { font-size: 22px; letter-spacing: 2px; }
+    .products-subtitle { font-size: 14px; }
+    .btn { padding: 12px 24px; font-size: 16px; }
+    .btn-small { padding: 8px 12px; font-size: 14px; }
+}
+</style>
 </head>
 <body>
-<div id="nav-container"></div>
+
+<div class="navbar">
+    <div class="nav-logo">悦翔电竞</div>
+    <div class="nav-links">
+        <a href="index.html">首页</a>
+        <a href="products.html" class="active">商品</a>
+        <a href="booster-info.html">打手</a>
+        <a href="contact.html">联系我们</a>
+    </div>
+    <div class="nav-menu-btn" id="navMenuBtn" onclick="toggleMenu()">&#8801;</div>
+</div>
+<div class="nav-dropdown" id="navDropdown">
+    <a href="index.html">首页</a>
+    <a href="products.html">商品</a>
+    <a href="booster-info.html">打手</a>
+    <a href="contact.html">联系我们</a>
+    <a href="about.html">关于我们</a>
+    <a href="join.html">加入我们</a>
+    <a href="missing.html">助力走失儿童</a>
+</div>
+
 <div class="main-content">
     <div class="products-header">
         <div class="products-brand">悦翔电竞</div>
         <div class="products-subtitle">军火库 - 代练商品</div>
     </div>
+
     <div class="product-grid" id="product-grid"></div>
-    <div style="text-align:center;margin-top:20px;">
-        <button class="btn btn-secondary" style="width:90%;max-width:360px;" onclick="showRefundTip()">未成年退款</button>
+
+    <div class="refund-wrap">
+        <button type="button" class="btn btn-secondary" onclick="showRefundTip()">未成年退款</button>
     </div>
 </div>
-<script src="js/common.js"></script>
+
 <script>
-// 纯静态商品数据（来源：原 backend/products.json）
-var PRODUCTS = [
-    { title: '1元保底150万', price: '1', description: '保底150万，稳过保底，超值入门' },
-    { title: '2元保底350万', price: '2', description: '保底350万，中段速上，性价比高' },
-    { title: '3元保底500万', price: '3', description: '保底500万，高分段位，专业代打' },
-    { title: '5毛保底100万', price: '0.5', description: '保底100万，低价体验，快速开局' },
-    { title: '全图出5鸡', price: '4', description: '全图出5鸡，战术大师，全程直播可查' },
-    { title: '10元899万送金枪', price: '10', description: '899万送金枪，高分段位，豪华套餐' },
-    { title: '6元保活单', price: '6', description: '保活单，保证存活，安全无忧' }
-];
+/* 商品选购页 - 纯前端静态实现
+   数据来源：同目录 goods.json（若不存在则回退读取 data.json）
+   通过 fetch 异步读取，动态渲染卡片：名称 / 分类 / 价格 / 介绍
+   兼容 ES5，适配旧版安卓浏览器 */
+
+var goodsList = [];
+var GRID_ID = 'product-grid';
+
+// 防止 XSS：对写入 HTML 的文本做转义
+function escapeHtml(s) {
+    if (s === null || s === undefined) return '';
+    return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+// 顶部汉堡菜单
+function toggleMenu() {
+    var dd = document.getElementById('navDropdown');
+    var btn = document.getElementById('navMenuBtn');
+    if (!dd) return;
+    if (dd.className.indexOf('show') >= 0) {
+        dd.className = 'nav-dropdown';
+        if (btn) btn.innerHTML = '&#8801;';
+    } else {
+        dd.className = 'nav-dropdown show';
+        if (btn) btn.innerHTML = '&#10005;';
+    }
+}
+
+document.onclick = function (e) {
+    var dd = document.getElementById('navDropdown');
+    var btn = document.getElementById('navMenuBtn');
+    if (dd && dd.className.indexOf('show') >= 0) {
+        if (e.target !== dd && !dd.contains(e.target) && e.target !== btn) {
+            dd.className = 'nav-dropdown';
+            if (btn) btn.innerHTML = '&#8801;';
+        }
+    }
+};
 
 function showRefundTip() {
     alert('请联系客服');
 }
 
-function renderProducts() {
-    var grid = document.getElementById('product-grid');
-    if (!PRODUCTS || PRODUCTS.length === 0) {
-        grid.innerHTML = '<p style="color:#64748b;">暂无商品</p>';
-        return;
-    }
-    var html = '';
-    for (var i = 0; i < PRODUCTS.length; i++) {
-        var p = PRODUCTS[i];
-        html += '<div class="product-card">';
-        html += '<div class="product-title">' + escapeHtml(p.title) + '</div>';
-        html += '<div class="product-price">' + escapeHtml(p.price) + '<span class="product-price-unit"> 元</span></div>';
-        html += '<div class="product-desc">' + escapeHtml(p.description || '') + '</div>';
-        html += '<button class="btn btn-primary btn-small product-buy-btn" onclick="buyProduct(\'' + escapeHtml(p.title) + '\', \'' + escapeHtml(p.price) + '\')">购买</button>';
-        html += '</div>';
-    }
-    grid.innerHTML = html;
-}
-
-function buyProduct(title, price) {
-    sessionStorage.setItem('yx_order_product', title);
-    sessionStorage.setItem('yx_order_price', price);
-    localStorage.setItem('yx_order_product', title);
-    localStorage.setItem('yx_order_price', price);
+// 点击「购买」：记录所选商品与价格，跳转支付页
+function buyProduct(item) {
+    sessionStorage.setItem('yx_order_product', item.name);
+    sessionStorage.setItem('yx_order_price', String(item.price));
+    localStorage.setItem('yx_order_product', item.name);
+    localStorage.setItem('yx_order_price', String(item.price));
     window.location.href = 'pay.html';
 }
 
-initPage(renderProducts);
+// 单张卡片 HTML：分类标签 + 名称 + 价格 + 介绍 + 购买按钮
+function productCardHtml(item, index) {
+    var html = '<div class="product-card">';
+    if (item.category) {
+        html += '<span class="product-category">' + escapeHtml(item.category) + '</span>';
+    }
+    html += '<div class="product-title">' + escapeHtml(item.name) + '</div>';
+    html += '<div class="product-price">' + escapeHtml(String(item.price)) +
+            '<span class="product-price-unit"> 元</span></div>';
+    if (item.introduction) {
+        html += '<div class="product-desc">' + escapeHtml(item.introduction) + '</div>';
+    }
+    html += '<button type="button" class="btn btn-primary btn-small product-buy-btn" data-index="' +
+            index + '">购买</button>';
+    html += '</div>';
+    return html;
+}
+
+function setGridHtml(html) {
+    var grid = document.getElementById(GRID_ID);
+    if (grid) grid.innerHTML = html;
+}
+
+function fileHint() {
+    if (window.location.protocol === 'file:') {
+        return '<span class="hint">当前以本地文件方式打开，浏览器会拦截数据读取，请改用 https 或本地服务访问。</span>';
+    }
+    return '';
+}
+
+// 渲染商品列表
+function renderProducts(data) {
+    var list = (data && data.length) ? data : [];
+    goodsList = list;
+    if (list.length === 0) {
+        setGridHtml('<p class="status">暂无商品</p>');
+        return;
+    }
+    var html = '';
+    for (var i = 0; i < list.length; i++) {
+        html += productCardHtml(list[i], i);
+    }
+    setGridHtml(html);
+}
+
+// 封装的 JSON 请求
+function fetchJson(url) {
+    return fetch(url, { cache: 'no-store' }).then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+    });
+}
+
+// 加载商品数据：优先 goods.json，失败则回退 data.json
+function loadProducts() {
+    setGridHtml('<p class="status">商品加载中...</p>');
+    if (!window.fetch) {
+        setGridHtml('<p class="status">当前浏览器不支持数据加载，请更换浏览器。</p>');
+        return;
+    }
+    fetchJson('./goods.json')
+        .then(function (data) {
+            renderProducts(data);
+        })
+        ['catch'](function () {
+            return fetchJson('./data.json').then(function (data) {
+                renderProducts(data);
+            });
+        })
+        ['catch'](function () {
+            setGridHtml('<p class="status">商品数据加载失败，请刷新重试。' + fileHint() + '</p>');
+        });
+}
+
+// 事件委托：处理卡片上的「购买」按钮
+function bindGrid() {
+    var grid = document.getElementById(GRID_ID);
+    if (!grid) return;
+    grid.onclick = function (e) {
+        var target = e.target || e.srcElement;
+        if (!target || !target.getAttribute) return;
+        var idx = target.getAttribute('data-index');
+        if (idx === null || idx === undefined || idx === '') return;
+        var item = goodsList[parseInt(idx, 10)];
+        if (item) buyProduct(item);
+    };
+}
+
+function initPage() {
+    bindGrid();
+    loadProducts();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPage);
+} else {
+    initPage();
+}
 </script>
 </body>
 </html>
