@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>商品 - 悦翔电竞</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="nav-container"></div>
+<div class="main-content">
+    <div class="products-header">
+        <div class="products-brand">悦翔电竞</div>
+        <div class="products-subtitle">军火库 - 代练商品</div>
+    </div>
+    <div class="product-grid" id="product-grid"></div>
+    <div style="text-align:center;margin-top:20px;">
+        <button class="btn btn-secondary" style="width:90%;max-width:360px;" onclick="showRefundTip()">未成年退款</button>
+    </div>
+</div>
+<script src="js/common.js"></script>
+<script>
+// 纯静态商品数据（来源：原 backend/products.json）
+var PRODUCTS = [
+    { title: '1元保底150万', price: '1', description: '保底150万，稳过保底，超值入门' },
+    { title: '2元保底350万', price: '2', description: '保底350万，中段速上，性价比高' },
+    { title: '3元保底500万', price: '3', description: '保底500万，高分段位，专业代打' },
+    { title: '5毛保底100万', price: '0.5', description: '保底100万，低价体验，快速开局' },
+    { title: '全图出5鸡', price: '4', description: '全图出5鸡，战术大师，全程直播可查' },
+    { title: '10元899万送金枪', price: '10', description: '899万送金枪，高分段位，豪华套餐' },
+    { title: '6元保活单', price: '6', description: '保活单，保证存活，安全无忧' }
+];
+
+function showRefundTip() {
+    alert('请联系客服');
+}
+
+function renderProducts() {
+    var grid = document.getElementById('product-grid');
+    if (!PRODUCTS || PRODUCTS.length === 0) {
+        grid.innerHTML = '<p style="color:#64748b;">暂无商品</p>';
+        return;
+    }
+    var html = '';
+    for (var i = 0; i < PRODUCTS.length; i++) {
+        var p = PRODUCTS[i];
+        html += '<div class="product-card">';
+        html += '<div class="product-title">' + escapeHtml(p.title) + '</div>';
+        html += '<div class="product-price">' + escapeHtml(p.price) + '<span class="product-price-unit"> 元</span></div>';
+        html += '<div class="product-desc">' + escapeHtml(p.description || '') + '</div>';
+        html += '<button class="btn btn-primary btn-small product-buy-btn" onclick="buyProduct(\'' + escapeHtml(p.title) + '\', \'' + escapeHtml(p.price) + '\')">购买</button>';
+        html += '</div>';
+    }
+    grid.innerHTML = html;
+}
+
+function buyProduct(title, price) {
+    sessionStorage.setItem('yx_order_product', title);
+    sessionStorage.setItem('yx_order_price', price);
+    localStorage.setItem('yx_order_product', title);
+    localStorage.setItem('yx_order_price', price);
+    window.location.href = 'pay.html';
+}
+
+initPage(renderProducts);
+</script>
+</body>
+</html>

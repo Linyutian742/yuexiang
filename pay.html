@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>支付 - 悦翔电竞</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* 下单信息表单（原“老板微信/QQ/抖音”信息框已替换） */
+.order-form {
+    background: #0f0f1a;
+    border: 1px solid #2a2a3e;
+    padding: 16px;
+    margin: 16px 0;
+    text-align: left;
+}
+.order-form .of-title {
+    color: #a855f7;
+    font-size: 15px;
+    font-weight: bold;
+}
+.order-form .of-hint {
+    color: #64748b;
+    font-size: 12px;
+    margin: 4px 0 14px;
+}
+.order-form .of-field {
+    display: block;
+    color: #94a3b8;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+.order-form .of-field input,
+.order-form .of-field select {
+    display: block;
+    width: 100%;
+    margin-top: 4px;
+    padding: 9px 10px;
+    background: #0a0a0f;
+    border: 1px solid #2a2a3e;
+    color: #e2e8f0;
+    font-size: 14px;
+    font-family: inherit;
+    color-scheme: dark;
+}
+.order-form .of-field input:focus,
+.order-form .of-field select:focus {
+    outline: none;
+    border-color: #a855f7;
+}
+.order-form .of-preview-label {
+    color: #94a3b8;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+.order-form textarea {
+    display: block;
+    width: 100%;
+    min-height: 132px;
+    padding: 10px;
+    background: #0a0a0f;
+    border: 1px dashed #a855f7;
+    color: #e2e8f0;
+    font-size: 13px;
+    line-height: 1.8;
+    font-family: inherit;
+    resize: vertical;
+}
+.order-form .of-copy-btn {
+    width: 100%;
+    margin-top: 12px;
+}
+</style>
+</head>
+<body>
+<div id="nav-container"></div>
+<div class="main-content">
+    <div class="pay-qr-container">
+        <h2 style="color:#a855f7;margin-bottom:8px;">扫码加老板微信</h2>
+        <p id="pay-product-info" style="color:#94a3b8;font-size:14px;margin-bottom:16px;"></p>
+        <div class="pay-qr-img">
+            <img src="qrcode.jpg" alt="老板微信二维码" style="max-width:220px;max-height:220px;width:auto;height:auto;display:block;margin:auto;">
+        </div>
+        <p style="color:#64748b;font-size:13px;">加老板微信，跟他说要买啥</p>
+
+        <div class="order-form">
+            <div class="of-title">填写订单信息</div>
+            <div class="of-hint">填好后点下方按钮复制，再到微信里粘贴发给老板</div>
+            <label class="of-field">游戏ID
+                <input id="oi-id" type="text" placeholder="你的游戏ID" autocomplete="off">
+            </label>
+            <label class="of-field">区服
+                <select id="oi-server">
+                    <option value="">请选择区服</option>
+                    <option value="微信区">微信区</option>
+                    <option value="QQ区">QQ区</option>
+                </select>
+            </label>
+            <label class="of-field">要买的商品
+                <input id="oi-goods" type="text" placeholder="如：2元保底350万" autocomplete="off">
+            </label>
+            <label class="of-field">数量
+                <input id="oi-count" type="text" placeholder="1" autocomplete="off">
+            </label>
+            <label class="of-field">联系方式
+                <input id="oi-contact" type="text" placeholder="你的微信或QQ，方便老板联系你" autocomplete="off">
+            </label>
+            <label class="of-field">备注
+                <input id="oi-note" type="text" placeholder="选填，如时间要求、指定模式" autocomplete="off">
+            </label>
+            <div class="of-preview-label">订单信息（也可长按框内文字手动复制）</div>
+            <textarea id="oi-text" readonly></textarea>
+            <button class="btn btn-primary of-copy-btn" onclick="copyOrderText()">复制订单信息</button>
+        </div>
+
+        <div class="pay-actions">
+            <button class="btn btn-secondary" onclick="window.location.href='products.html'">返回商品</button>
+            <button class="btn btn-primary" onclick="window.location.href='contact.html'">联系我们</button>
+        </div>
+    </div>
+</div>
+<script src="js/common.js"></script>
+<script>
+var ORDER_FIELDS = ['oi-id', 'oi-server', 'oi-goods', 'oi-count', 'oi-contact', 'oi-note'];
+
+function orderValue(id) {
+    var el = document.getElementById(id);
+    if (!el) return '';
+    return String(el.value).replace(/^\s+|\s+$/g, '');
+}
+
+function orderProduct() {
+    return sessionStorage.getItem('yx_order_product') || localStorage.getItem('yx_order_product') || '';
+}
+
+function orderPrice() {
+    return sessionStorage.getItem('yx_order_price') || localStorage.getItem('yx_order_price') || '';
+}
+
+// 根据表单当前内容，实时生成要发给老板的订单文案
+function buildOrderText() {
+    var lines = [];
+    lines.push('【悦翔电竞 下单】');
+    lines.push('商品：' + (orderValue('oi-goods') || '未填写'));
+    lines.push('数量：' + (orderValue('oi-count') || '1'));
+    if (orderPrice()) {
+        lines.push('金额：' + orderPrice() + ' 元');
+    }
+    lines.push('游戏ID：' + (orderValue('oi-id') || '未填写'));
+    lines.push('区服：' + (orderValue('oi-server') || '未填写'));
+    lines.push('联系方式：' + (orderValue('oi-contact') || '未填写'));
+    if (orderValue('oi-note')) {
+        lines.push('备注：' + orderValue('oi-note'));
+    }
+    var text = lines.join('\n');
+    var ta = document.getElementById('oi-text');
+    if (ta) ta.value = text;
+    return text;
+}
+
+function legacyCopy(text, done, fail) {
+    var ta = document.getElementById('oi-text');
+    var ok = false;
+    try {
+        ta.removeAttribute('readonly');
+        ta.select();
+        ta.setSelectionRange(0, 99999);
+        ok = document.execCommand('copy');
+    } catch (e) {
+        ok = false;
+    }
+    ta.setAttribute('readonly', 'readonly');
+    if (ok) { done(); } else { fail(); }
+}
+
+function copyOrderText() {
+    if (!orderValue('oi-id') || !orderValue('oi-server') || !orderValue('oi-goods')) {
+        showToast('请先填写游戏ID和要买的商品，并选择区服', 'error');
+        return;
+    }
+    var text = buildOrderText();
+    var done = function () { showToast('已复制，去微信粘贴发给老板', 'success'); };
+    var fail = function () { showToast('复制失败，请长按订单信息手动复制', 'error'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () { legacyCopy(text, done, fail); });
+    } else {
+        legacyCopy(text, done, fail);
+    }
+}
+
+function initOrderForm() {
+    var product = orderProduct();
+    var price = orderPrice();
+    var info = document.getElementById('pay-product-info');
+    if (info) {
+        info.textContent = product ? (product + ' - ' + price + ' 元') : '未选择商品，可在下方直接填写';
+    }
+    var goods = document.getElementById('oi-goods');
+    if (goods && !goods.value && product) {
+        goods.value = product;
+    }
+    var count = document.getElementById('oi-count');
+    if (count && !count.value) {
+        count.value = '1';
+    }
+    for (var i = 0; i < ORDER_FIELDS.length; i++) {
+        var el = document.getElementById(ORDER_FIELDS[i]);
+        if (el) {
+            el.addEventListener('input', buildOrderText);
+            el.addEventListener('change', buildOrderText);
+        }
+    }
+    buildOrderText();
+}
+
+initPage(initOrderForm);
+</script>
+</body>
+</html>
