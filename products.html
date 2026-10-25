@@ -18,10 +18,12 @@ body {
 
 a { color: #a855f7; text-decoration: none; }
 
-/* ==================== 顶部导航 ==================== */
+/* ==================== 顶部导航（与 js/common.js 的 renderNavbar + css/style.css 保持一致） ==================== */
 .navbar {
     position: fixed;
-    top: 0; left: 0; right: 0;
+    top: 0;
+    left: 0;
+    right: 0;
     height: 56px;
     background: #0f0f1a;
     border-bottom: 2px solid #a855f7;
@@ -41,20 +43,25 @@ a { color: #a855f7; text-decoration: none; }
     letter-spacing: 2px;
 }
 
-.nav-links { display: flex; align-items: center; gap: 24px; }
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
 
 .nav-links a {
     color: #e2e8f0;
     font-size: 15px;
     padding: 6px 12px;
     border-bottom: 2px solid transparent;
+    transition: border-color 0.2s;
 }
 
-.nav-links a:hover,
-.nav-links a.active { color: #a855f7; border-bottom-color: #a855f7; }
+.nav-links a:hover {
+    border-bottom-color: #a855f7;
+}
 
 .nav-menu-btn {
-    display: none;
     font-size: 22px;
     color: #a855f7;
     cursor: pointer;
@@ -67,26 +74,46 @@ a { color: #a855f7; text-decoration: none; }
 .nav-dropdown {
     display: none;
     position: fixed;
-    top: 56px; right: 0;
+    top: 56px;
+    right: 0;
     width: 260px;
     background: #0f0f1a;
     border: 1px solid #a855f7;
     border-top: none;
     box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3);
     z-index: 999;
+    padding: 0;
 }
 
-.nav-dropdown.show { display: block; }
-
-.nav-dropdown a {
+.nav-dropdown.show {
     display: block;
-    padding: 10px 16px;
-    color: #e2e8f0;
-    font-size: 14px;
+}
+
+.nav-dropdown-section {
+    padding: 12px 16px;
     border-bottom: 1px solid #1e1e2e;
 }
 
-.nav-dropdown a:hover { background: #1a1a2e; color: #a855f7; }
+.nav-dropdown-section:last-child {
+    border-bottom: none;
+}
+
+.nav-dropdown a {
+    display: block;
+    padding: 8px 16px;
+    color: #e2e8f0;
+    font-size: 14px;
+}
+
+.nav-dropdown a:hover {
+    background: #1a1a2e;
+    color: #a855f7;
+}
+
+.nav-dropdown-divider {
+    border-top: 1px solid #2a2a3e;
+    margin: 4px 0;
+}
 
 /* ==================== 主体 ==================== */
 .main-content {
@@ -207,7 +234,9 @@ a { color: #a855f7; text-decoration: none; }
     .nav-logo { font-size: 16px; letter-spacing: 1px; }
     .nav-links { display: none; }
     .nav-menu-btn { display: block; }
-    .nav-dropdown { top: 48px; width: 100%; left: 0; right: 0; max-height: calc(100vh - 48px); overflow-y: auto; }
+    .nav-dropdown { top: 48px; width: 100%; left: 0; right: 0; max-height: calc(100vh - 48px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .nav-dropdown-section { padding: 8px 12px; }
+    .nav-dropdown a { padding: 6px 12px; font-size: 13px; }
     .main-content { margin-top: 48px; padding: 12px; }
     .product-grid { gap: 10px; padding: 10px 0; }
     .product-card { width: 100%; padding: 14px; }
@@ -226,16 +255,22 @@ a { color: #a855f7; text-decoration: none; }
     <div class="nav-logo">悦翔电竞</div>
     <div class="nav-links">
         <a href="index.html">首页</a>
-        <a href="products.html" class="active">商品</a>
+        <a href="products.html">商品</a>
         <a href="booster-info.html">打手</a>
-        <a href="contact.html">联系我们</a>
     </div>
-    <div class="nav-menu-btn" id="navMenuBtn" onclick="toggleMenu()">&#8801;</div>
+    <div class="nav-menu-btn" onclick="toggleMenu()">&#8801;</div>
 </div>
 <div class="nav-dropdown" id="navDropdown">
-    <a href="index.html">首页</a>
-    <a href="products.html">商品</a>
-    <a href="booster-info.html">打手</a>
+    <div class="nav-dropdown-section" style="display:flex;justify-content:space-between;">
+        <span>首页</span><a href="index.html">前往</a>
+    </div>
+    <div class="nav-dropdown-section" style="display:flex;justify-content:space-between;">
+        <span>商品</span><a href="products.html">前往</a>
+    </div>
+    <div class="nav-dropdown-section" style="display:flex;justify-content:space-between;">
+        <span>打手</span><a href="booster-info.html">前往</a>
+    </div>
+    <div class="nav-dropdown-divider"></div>
     <a href="contact.html">联系我们</a>
     <a href="about.html">关于我们</a>
     <a href="join.html">加入我们</a>
@@ -259,6 +294,7 @@ a { color: #a855f7; text-decoration: none; }
 /* 商品选购页 - 纯前端静态实现
    数据来源：同目录 goods.json（若不存在则回退读取 data.json）
    通过 fetch 异步读取，动态渲染卡片：名称 / 分类 / 价格 / 介绍
+   顶部导航与 js/common.js 的 renderNavbar() 保持一致
    兼容 ES5，适配旧版安卓浏览器 */
 
 var goodsList = [];
@@ -275,10 +311,10 @@ function escapeHtml(s) {
         .replace(/'/g, '&#39;');
 }
 
-// 顶部汉堡菜单
+// 顶部汉堡菜单（与 common.js 一致：通过 .nav-menu-btn 类定位按钮）
 function toggleMenu() {
     var dd = document.getElementById('navDropdown');
-    var btn = document.getElementById('navMenuBtn');
+    var btn = document.querySelector('.nav-menu-btn');
     if (!dd) return;
     if (dd.className.indexOf('show') >= 0) {
         dd.className = 'nav-dropdown';
@@ -291,7 +327,7 @@ function toggleMenu() {
 
 document.onclick = function (e) {
     var dd = document.getElementById('navDropdown');
-    var btn = document.getElementById('navMenuBtn');
+    var btn = document.querySelector('.nav-menu-btn');
     if (dd && dd.className.indexOf('show') >= 0) {
         if (e.target !== dd && !dd.contains(e.target) && e.target !== btn) {
             dd.className = 'nav-dropdown';
