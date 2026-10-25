@@ -75,7 +75,18 @@ if %errorlevel% equ 0 (
     endlocal
 )
 
-REM 强制推送到远程（覆盖历史）
+REM 强制推送到远程（覆盖历史）—— 危险操作，需二次确认
+echo ------------------------------------------------------------
+echo [警告] 即将执行【强制推送 --force】，会用本地历史覆盖远程 %BRANCH% 分支，
+echo        远程上多出的提交将被永久删除，且无法撤销！
+echo ------------------------------------------------------------
+set "FS_CONFIRM1="
+set /p "FS_CONFIRM1=第一次确认：是否继续强制推送？输入 Y 继续，其它任意键取消： "
+if /i not "%FS_CONFIRM1%"=="Y" goto :FS_CANCEL
+set "FS_CONFIRM2="
+set /p "FS_CONFIRM2=第二次确认：此操作不可撤销，请输入 YES 继续： "
+if /i not "%FS_CONFIRM2%"=="YES" goto :FS_CANCEL
+
 echo [信息] 正在强制覆盖远程 %BRANCH% 分支...
 git push --force origin "%BRANCH%"
 if %errorlevel% neq 0 (
@@ -86,5 +97,10 @@ if %errorlevel% neq 0 (
 ) else (
     echo [成功] 已强制覆盖远程 %BRANCH% 分支！
 )
+goto :FS_DONE
 
+:FS_CANCEL
+echo [已取消] 未执行强制推送，远程分支保持不变。
+
+:FS_DONE
 pause
